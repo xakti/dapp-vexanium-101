@@ -4,7 +4,7 @@
             <span class="font-bold text-2xl mb-4 text-center">
                 DApp Vexanium 101
             </span>
-            <div v-if="Store.account.value.length > 0" class="inline-flex items-center gap-2">
+            <div v-if="Store.account.value.length > 0" class="inline-flex items-center gap-2 mx-auto">
                 <Avatar icon="pi pi-user" size="large"/>
                 <span class="font-bold">{{ Store.account }}</span>
             </div>
@@ -17,8 +17,9 @@
 </template>
 <script setup>
 
-import {Herlina} from "herlina-kit";
+import {IdentityProof} from "@wharfkit/signing-request";
 import {useToast} from "primevue";
+import {Herlina} from "herlina-kit";
 import {useRouter} from "vue-router";
 import Store from "@/js/store.js";
 
@@ -42,30 +43,31 @@ function popupWindow(url, title, w, h) {
 
 function openWallet(vsr) {
     let login = vsr.split(":")[1]; // 'vsr:' dibuang
-    let walletUri = `https://herlina.web.app/login?vsr=${login}`;
-    popupWindow(walletUri, "Vexanium Wallet", 360, 600);
+    let walletUrl = `https://herlina.web.app/login?vsr=${login}`;
+    popupWindow(walletUrl, "Vexanium Wallet", 360, 600);
 }
 
 function doLogin() {
     if (!Store.herlina) initHerlina();
 
+    // buat login request, vsr ini juga bisa untuk kode qr
     const vsr = Store.herlina.createLoginRequest("DApp Vexanium 101", "https://karmila.web.app/favicon.png");
-    // vsr ini juga bisa untuk kode qr
-
-    openWallet(vsr); // buka di jendela baru
+    // sambungkan aplikasi ke signal server
+    Store.herlina.connect();
+    // buka wallet di jendela baru
+    openWallet(vsr);
 }
 
 function initHerlina() {
     const herlina = new Herlina();
     herlina.on("error", onServerError);
     herlina.on("session", onSession);
-    herlina.connect();
     Store.herlina = herlina;
 }
 
 function onServerError(error) {
     console.log(error.message);
-    toast.add({life: 4000, severity: "error", summary: "Koneksi Error", detail: error.message});
+    toast.add({life: 4000, severity: "error", summary: "Koneksi Server Error", detail: error.message});
 }
 
 /**
@@ -76,22 +78,30 @@ function onServerError(error) {
 async function onSession(session, proof) {
     console.log("tersambung dengan wallet");
 
-    // verifikasi
-    const account = await Store.client.v1.chain.get_account(proof.signer.actor);
-    if (proof.verify(account.getPermission(proof.signer.permission).required_auth)) {
-        session.setABICache(Store.abiCache);
-        session.onClose(onClose);
-        Store.session = session;
-
-        toast.add({life: 3000, severity: "success", summary: `tersambung dengan ${proof.signer.toString()}`});
-        Store.account.value = proof.signer.toString();
-
-        // sudah tersambung dengan wallet
-        // putuskan signal server
-        Store.herlina.disconnect();
+    if (proof && proof instanceof IdentityProof) {
+        // verifikasi akun
+        const account = await Store.client.v1.chain.get_account(proof.signer.actor);
+        if (proof.verify(account.getPermission(proof.signer.permission).required_auth)) {
+            Store.account.value = proof.signer.actor.toString();
+            toast.add({life: 3000, severity: "success", summary: `Tersambung dengan ${proof.signer.actor.toString()}`});
+        } else {
+            toast.add({life: 4000, severity: "error", summary: "Gagal verifikasi akun"});
+            Store.herlina.destroy();
+            Store.herlina = undefined;
+            return;
+        }
     } else {
-        toast.add({life: 4000, severity: "error", summary: "Gagal verifikasi akun"});
+        // login dari session terakhir
+        Store.account.value = session.actor.toString();
+        toast.add({life: 3000, severity: "success", summary: `Tersambung dengan ${session.actor.toString()}`});
     }
+
+    session.setABICache(Store.abiCache);
+    session.onClose(onClose);
+    Store.session = session;
+    // sudah tersambung dengan wallet
+    // putuskan signal server
+    Store.herlina.disconnect();
 }
 
 function onClose() {

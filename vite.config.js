@@ -6,13 +6,41 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 import Components from 'unplugin-vue-components/vite'
 import {PrimeVueResolver} from '@primevue/auto-import-resolver'
+import {VitePWA} from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
         vue(), vueDevTools(), tailwindcss(),
-        Components({
-            resolvers: [PrimeVueResolver()]
+        Components({resolvers: [PrimeVueResolver()]}),
+        VitePWA({
+            registerType: 'autoUpdate',
+            manifest: {
+                name: 'Xakti - DApp Vexanium 101',
+                short_name: 'Xakti',
+                start_url: '/',
+                display: 'standalone',
+                background_color: '#e0f7fa',
+                theme_color: '#e0f7fa',
+                icons: [
+                    {
+                        src: 'icon-192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                    },
+                    {
+                        src: 'icon-512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                    },
+                    {
+                        src: 'maskable-icon-512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable any',
+                    },
+                ],
+            }
         })
     ],
     build: {
@@ -21,7 +49,7 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    'wharfkit': ['@wharfkit/antelope', '@wharfkit/contract', '@wharfkit/signing-request', '@wharfkit/abicache', '@wharfkit/account', 'pako'],
+                    'wharfkit': ['@wharfkit/antelope', '@wharfkit/signing-request', '@wharfkit/abicache', 'pako'],
                     'vue': ['vue', 'vue-router'],
                     'gui': ['primevue', 'tailwindcss-primeui', 'tailwindcss', '@primeuix/themes']
                 }

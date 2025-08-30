@@ -1,6 +1,6 @@
 {
   "name": "dapp-vexanium-101",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,10 +11,9 @@
     "@primeuix/themes": "^1.0.3",
     "@tailwindcss/vite": "^4.1.4",
     "@wharfkit/abicache": "^1.2.2",
-    "@wharfkit/account": "^1.4.1",
     "@wharfkit/antelope": "^1.0.13",
     "@wharfkit/signing-request": "^3.2.0",
-    "herlina-kit": "^0.1.3",
+    "herlina-kit": "0.1.4",
     "luxon": "3.6.1",
     "pako": "2.1.0",
     "primeicons": "7.0.0",
@@ -30,6 +29,7 @@
     "rollup-plugin-node-polyfills": "0.2.1",
     "unplugin-vue-components": "^28.5.0",
     "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.3",
     "vite-plugin-vue-devtools": "^7.7.5"
   }
 }

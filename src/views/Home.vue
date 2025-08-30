@@ -21,7 +21,7 @@ import {IdentityProof} from "@wharfkit/signing-request";
 import {useToast} from "primevue";
 import {Herlina} from "herlina-kit";
 import {useRouter} from "vue-router";
-import Store from "@/js/store.js";
+import Store from "../js/store.js";
 
 const toast = useToast();
 const router = useRouter();
@@ -51,7 +51,7 @@ function doLogin() {
     if (!Store.herlina) initHerlina();
 
     // buat login request, vsr ini juga bisa untuk kode qr
-    const vsr = Store.herlina.createLoginRequest("DApp Vexanium 101", "https://karmila.web.app/favicon.png");
+    const vsr = Store.herlina.createLoginRequest("DApp Vexanium 101", "https://infraxakti.web.app/icon-128.png");
     // sambungkan aplikasi ke signal server
     Store.herlina.connect();
     // buka wallet di jendela baru

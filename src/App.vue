@@ -9,7 +9,7 @@
 <script setup>
 
 import {onMounted} from "vue";
-import Store from "@/js/store.js";
+import Store from "./js/store.js";
 
 onMounted(() => {
     Store.initWharfKit();

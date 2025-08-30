@@ -34,8 +34,8 @@
 <script setup>
 import {onActivated, reactive} from "vue";
 import {useToast} from "primevue";
-import Store from "@/js/store.js";
 import {Action, Asset} from "@wharfkit/antelope";
+import Store from "../js/store.js";
 
 const toast = useToast();
 const token = reactive({contract: "vex.token", symbol: "VEX"});

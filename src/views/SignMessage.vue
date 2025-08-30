@@ -14,7 +14,7 @@
 import {ref} from "vue";
 import {useToast} from "primevue";
 import {Signature} from "@wharfkit/antelope";
-import Store from "@/js/store.js";
+import Store from "../js/store.js";
 
 const toast = useToast();
 const content = ref();

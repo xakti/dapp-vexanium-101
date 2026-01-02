@@ -6,10 +6,12 @@
             </template>
             <template #content>
                 <div class="flex flex-col gap-2">
-                    <FloatLabel variant="in">
-                        <InputText id="receiver" fluid v-model="state.receiver"></InputText>
-                        <label for="receiver">Penerima</label>
-                    </FloatLabel>
+	                <FloatLabel variant="in">
+		                <AutoComplete id="receiver" fluid v-model="state.receiver" :delay="700"
+		                              :suggestions="suggestions.account"
+		                              @complete="completeAccount"></AutoComplete>
+		                <label for="receiver">Penerima</label>
+	                </FloatLabel>
                     <div>
                         <FloatLabel variant="in">
                             <InputText id="quantity" fluid inputmode="numeric" v-model="state.quantity"></InputText>
@@ -35,6 +37,7 @@
 import {onActivated, reactive} from "vue";
 import {useToast} from "primevue";
 import {Action, Asset} from "@wharfkit/antelope";
+import {completeAccount, suggestions} from "../js/auto.js";
 import Store from "../js/store.js";
 
 const toast = useToast();
@@ -43,7 +46,9 @@ const state = reactive({receiver: "", quantity: "", memo: "", loading: false, ba
 let balance;
 
 onActivated(() => {
-    fetchBalance();
+	if (Store.isWalletConnected()) {
+        fetchBalance();
+	}
 });
 
 async function fetchBalance() {
@@ -63,6 +68,11 @@ async function fetchBalance() {
 }
 
 async function send() {
+	if (!Store.isWalletConnected()) {
+		toast.add({life: 3000, severity: "error", summary: "Wallet belum tersambung"});
+		return;
+	}
+
     const from = Store.session.actor;
     const to = state.receiver.trim().toLowerCase();
     let quantity = Asset.from("0.0000 VEX");

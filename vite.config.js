@@ -15,30 +15,36 @@ export default defineConfig({
         Components({resolvers: [PrimeVueResolver()]}),
         VitePWA({
             registerType: 'autoUpdate',
+            includeAssets: ['pwa-64x64.png'],
             manifest: {
                 name: 'Xakti - DApp Vexanium 101',
-                short_name: 'Xakti',
+                short_name: 'Xakti DApp',
                 start_url: '/',
                 display: 'standalone',
                 background_color: '#e0f7fa',
                 theme_color: '#e0f7fa',
                 icons: [
                     {
-                        src: 'icon-192.png',
-                        sizes: '192x192',
-                        type: 'image/png',
+                        "src": "pwa-64x64.png",
+                        "sizes": "64x64",
+                        "type": "image/png"
                     },
                     {
-                        src: 'icon-512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
+                        "src": "pwa-192x192.png",
+                        "sizes": "192x192",
+                        "type": "image/png"
                     },
                     {
-                        src: 'maskable-icon-512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                        purpose: 'maskable any',
+                        "src": "pwa-512x512.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
                     },
+                    {
+                        "src": "maskable-icon-512x512.png",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "maskable"
+                    }
                 ],
             }
         })

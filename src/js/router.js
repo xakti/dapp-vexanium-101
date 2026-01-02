@@ -3,6 +3,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 import Home from '@/views/Home.vue';
 import Transfer from "@/views/Transfer.vue";
 import SignMessage from "@/views/SignMessage.vue";
+import TransferHistory from "@/views/TransferHistory.vue";
 
 const routes = [
     {
@@ -12,6 +13,10 @@ const routes = [
     {
         path: '/transfer',
         component: Transfer
+    },
+    {
+        path: '/transfer-history',
+        component: TransferHistory
     },
     {
         path: '/sign',

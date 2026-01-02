@@ -2,6 +2,9 @@ import {ref} from "vue";
 import {APIClient} from "@wharfkit/antelope";
 import {ABICache} from "@wharfkit/abicache";
 
+export const vexascan = "https://vexascan.com:8443";
+export const wind = "https://api.windcrypto.com";
+
 const Store = {
     account: ref(""),
     /**
@@ -23,7 +26,7 @@ const Store = {
 
 
     initWharfKit() {
-        const client = new APIClient({url: "https://v2.vexascan.com:2096"});
+        const client = new APIClient({url: vexascan});
         this.abiCache = new ABICache(client);
         this.client = client;
     },

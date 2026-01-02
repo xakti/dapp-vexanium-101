@@ -1,6 +1,7 @@
 <template>
     <div id="home" class="p-2">
         <div class="border border-surface rounded-xl shadow-md flex flex-col gap-2 p-2 mx-auto md:w-1/2">
+	        <img src="/pwa-64x64.png" alt="Xakti" class="mx-auto">
             <span class="font-bold text-2xl mb-4 text-center">
                 DApp Vexanium 101
             </span>
@@ -10,7 +11,8 @@
             </div>
             <Button v-else label="Login" @click="doLogin"></Button>
 
-            <Button label="Transfer VEX" @click="goTransfer"></Button>
+            <Button label="Transfer VEX" as="router-link" to="/transfer"></Button>
+            <Button label="Transfer History" as="router-link" to="/transfer-history"></Button>
             <Button label="Sign Message" as="router-link" to="/sign"></Button>
         </div>
     </div>
@@ -25,14 +27,6 @@ import Store from "../js/store.js";
 
 const toast = useToast();
 const router = useRouter();
-
-function goTransfer() {
-    if (!Store.isWalletConnected()) {
-        toast.add({life: 3000, severity: "error", summary: "Wallet belum tersambung"});
-        return;
-    }
-    router.push("/transfer");
-}
 
 function popupWindow(url, title, w, h) {
     const left = window.screen.width - w;
@@ -51,7 +45,7 @@ function doLogin() {
     if (!Store.herlina) initHerlina();
 
     // buat login request, vsr ini juga bisa untuk kode qr
-    const vsr = Store.herlina.createLoginRequest("DApp Vexanium 101", "https://infraxakti.web.app/icon-128.png");
+    const vsr = Store.herlina.createLoginRequest("DApp Vexanium 101", "https://dapp-vexanium.pages.dev/pwa-64x64.png");
     // sambungkan aplikasi ke signal server
     Store.herlina.connect();
     // buka wallet di jendela baru
@@ -109,8 +103,8 @@ function onClose() {
 
     Store.account.value = "";
     Store.herlina.destroy();
-    Store.herlina = undefined;
-    Store.session = undefined;
+    Store.herlina = null;
+    Store.session = null;
     toast.add({life: 4000, severity: "info", summary: "Terputus dengan wallet"});
 }
 </script>
